@@ -43,18 +43,24 @@ def handle_message(message):
     if is_group and user_id not in user_data[chat_id]["users"]:
         user_data[chat_id]["users"][user_id] = {"name": username, "info": {}}
     
-    msg_text = f"{username}: {message.text}" if is_group else message.text
-    user_data[chat_id]["history"].append({"role": "user", "parts": [{"text": msg_text}]})
+    # Записываем сообщение в историю только если есть текст
+    if message.text:
+        msg_text = f"{username}: {message.text}" if is_group else message.text
+        user_data[chat_id]["history"].append({"role": "user", "parts": [{"text": msg_text}]})
 
-    # Решаем, отвечать ли
+    # Решаем, отвечать ли (только для текстовых сообщений)
     should_reply = True  # По умолчанию отвечаем всегда
-    if is_group:
-        name_triggers = ["пше", "марион", "пшен", "пши", "пшён"]
-        mentioned = any(trigger in message.text.lower() for trigger in name_triggers)
-        should_reply = (mentioned and random.random() < 0.8) or (not mentioned and random.random() < 0.25)
-        print(f"Group chat - Mentioned: {mentioned}, Random value: {random.random()}, Should reply: {should_reply}")
+    if message.text:  # Проверяем, есть ли текст
+        if is_group:
+            name_triggers = ["пше", "марион", "пшен", "пши", "пшён"]
+            mentioned = any(trigger in message.text.lower() for trigger in name_triggers)
+            should_reply = (mentioned and random.random() < 0.8) or (not mentioned and random.random() < 0.25)
+            print(f"Group chat - Mentioned: {mentioned}, Random value: {random.random()}, Should reply: {should_reply}")
+        else:
+            print("Private chat - Replying to every message")
     else:
-        print("Private chat - Replying to every message")
+        print("No text in message - Skipping reply")
+        should_reply = False
 
     if should_reply:
         context = PERSONALITY_PROMPT
@@ -75,8 +81,8 @@ def handle_message(message):
             print(f"Error: {str(e)}")
             bot.reply_to(message, f"Ошибка: {str(e)}")
 
-    # Запоминаем информацию
-    if "меня зовут" in message.text.lower():
+    # Запоминаем информацию (только если есть текст)
+    if message.text and "меня зовут" in message.text.lower():
         name = message.text.split("зовут")[-1].strip()
         if is_group:
             user_data[chat_id]["users"][user_id]["info"]["name"] = name
@@ -86,7 +92,7 @@ def handle_message(message):
             user_data[chat_id]["info"]["name"] = name
             bot.reply_to(message, f"О, {name}, звучит как имя, достойное моего внимания. Запомнила!")
         print(f"Updated name: {name}")
-    elif "мне нравится" in message.text.lower():
+    elif message.text and "мне нравится" in message.text.lower():
         interest = message.text.split("нравится")[-1].strip()
         if is_group:
             user_data[chat_id]["users"][user_id]["info"]["interests"] = user_data[chat_id]["users"][user_id]["info"].get("interests", []) + [interest]
@@ -96,7 +102,7 @@ def handle_message(message):
             user_data[chat_id]["info"]["interests"] = user_data[chat_id]["info"].get("interests", []) + [interest]
             bot.reply_to(message, f"{interest}, да? Ну ладно, это почти так же круто, как я!")
         print(f"Updated interest: {interest}")
-    elif "я из" in message.text.lower():
+    elif message.text and "я из" in message.text.lower():
         city = message.text.split("из")[-1].strip()
         if is_group:
             user_data[chat_id]["users"][user_id]["info"]["city"] = city
