@@ -29,12 +29,14 @@ def reply(message):
     user_id = message.chat.id
     if user_id not in user_data:
         user_data[user_id] = []
-    user_data[user_id].append({"role": "user", "content": message.text})
+    # Добавляем сообщение пользователя в правильном формате
+    user_data[user_id].append({"role": "user", "parts": [{"text": message.text}]})
     try:
         chat = model.start_chat(history=user_data[user_id])
         response = chat.send_message(message.text)
         print(f"Gemini response: {response.text}")
-        user_data[user_id].append({"role": "model", "content": response.text})
+        # Добавляем ответ Gemini в правильном формате
+        user_data[user_id].append({"role": "model", "parts": [{"text": response.text}]})
         bot.reply_to(message, response.text)
     except Exception as e:
         print(f"Error: {str(e)}")
