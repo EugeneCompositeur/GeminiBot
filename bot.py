@@ -4,9 +4,9 @@ import google.generativeai as genai
 import json
 
 app = Flask(__name__)
-bot = telebot.TeleBot("YOUR_TELEGRAM_TOKEN")
+bot = telebot.TeleBot("7542475591:AAGaUekkP7oUgWcOpkf6uNlcVUQe0KSh9Lc")
 
-genai.configure(api_key="YOUR_GEMINI_API_KEY")
+genai.configure(api_key="AIzaSyBOna2ZOyqivhD2b_saoi6fHc6_N4phpiU")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 try:
