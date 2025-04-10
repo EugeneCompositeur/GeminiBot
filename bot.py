@@ -9,10 +9,10 @@ bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))
 def webhook():
     update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
     print(f"Received update: {update}")
-    bot.process_new_updates([update])
+    if update.message:  # Проверяем, есть ли сообщение
+        reply(update.message)  # Явно вызываем обработчик
     return 'OK', 200
 
-@bot.message_handler(func=lambda message: True)
 def reply(message):
     print(f"Processing message: {message.text}")
     bot.reply_to(message, f"Эхо: {message.text}")
