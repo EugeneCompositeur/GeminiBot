@@ -1,4 +1,4 @@
 flask
-telebot
+pyTelegramBotAPI
 google-generativeai
 gunicorn
