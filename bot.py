@@ -5,9 +5,9 @@ import json
 import os
 
 app = Flask(__name__)
-bot = telebot.TeleBot(os.getenv("7542475591:AAGaUekkP7oUgWcOpkf6uNlcVUQe0KSh9Lc"))  # Берем токен из переменной окружения
+bot = telebot.TeleBot(os.getenv("7542475591:AAGaUekkP7oUgWcOpkf6uNlcVUQe0KSh9Lc"))  # Токен из переменной окружения
 
-genai.configure(api_key=os.getenv("AIzaSyBOna2ZOyqivhD2b_saoi6fHc6_N4phpiU"))  # Берем ключ из переменной окружения
+genai.configure(api_key=os.getenv("AIzaSyBOna2ZOyqivhD2b_saoi6fHc6_N4phpiU"))  # Ключ из переменной окружения
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 try:
@@ -32,9 +32,9 @@ def reply(message):
         chat = model.start_chat(history=user_data[user_id])
         response = chat.send_message(message.text)
         user_data[user_id].append({"role": "model", "content": response.text})
-        bot.reply_to(message, response.text)  # Отправляем ответ пользователю
+        bot.reply_to(message, response.text)
     except Exception as e:
-        bot.reply_to(message, f"Ошибка: {str(e)}")  # Сообщаем об ошибке
+        bot.reply_to(message, f"Ошибка: {str(e)}")
     with open("user_data.json", "w") as f:
         json.dump(user_data, f)
 
