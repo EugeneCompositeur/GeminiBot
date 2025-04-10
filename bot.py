@@ -35,6 +35,7 @@ def handle_message(message):
     user_id = message.from_user.id
     username = message.from_user.username or message.from_user.first_name
     is_group = message.chat.type in ['group', 'supergroup']
+    print(f"Chat type: {'group' if is_group else 'private'}, Chat ID: {chat_id}")
 
     if chat_id not in user_data:
         user_data[chat_id] = {"history": [], "users": {} if is_group else None}
@@ -51,7 +52,7 @@ def handle_message(message):
         name_triggers = ["пше", "марион", "пшен", "пши", "пшён"]
         mentioned = any(trigger in message.text.lower() for trigger in name_triggers)
         should_reply = (mentioned and random.random() < 0.8) or (not mentioned and random.random() < 0.25)
-        print(f"Group chat - Should reply: {should_reply}, Mentioned: {mentioned}")
+        print(f"Group chat - Mentioned: {mentioned}, Random value: {random.random()}, Should reply: {should_reply}")
     else:
         print("Private chat - Replying to every message")
 
