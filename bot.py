@@ -5,9 +5,9 @@ import json
 import os
 
 app = Flask(__name__)
-bot = telebot.TeleBot(os.getenv("7542475591:AAGaUekkP7oUgWcOpkf6uNlcVUQe0KSh9Lc"))  # Токен из переменной окружения
+bot = telebot.TeleBot(os.getenv("TELEGRAM_TOKEN"))  # Токен из переменной окружения
 
-genai.configure(api_key=os.getenv("AIzaSyBOna2ZOyqivhD2b_saoi6fHc6_N4phpiU"))  # Ключ из переменной окружения
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # Ключ из переменной окружения
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 try:
